@@ -1,58 +1,64 @@
 <template>
   <a-card class="box-card">
-    <a-form
-        ref="loginFormRef"
-        :rules="formRules"
-        size="medium"
-        layout="vertical"
-        :model="formItem"
-        auto-label-width
-        @submit="submitForm"
-    >
-      <a-form-item>
-      <a-typography-title :heading="4" >
-        登录
-      </a-typography-title>
-      </a-form-item>
-      <a-form-item label="Username"
-                   field="username"
-                   hide-asterisk
-      >
-        <a-input
-            v-model="formItem.username"
-            placeholder="Please input username"
-            :onFocus="onFocus">
-          <template #prefix>
-            <icon-user />
-          </template>
-        </a-input>
-      </a-form-item>
-      <a-form-item label="Password"
-                   field="password"
-                   hide-asterisk
-      >
-        <a-input-password
-            v-model="formItem.password"
-            placeholder="Please input password"
+    <a-tabs default-active-key="1"
+            lazy-load
+            justify
             >
-          </a-input-password>
-      </a-form-item>
-      <a-form-item>
-        <a-link type="primary">忘记用户名或密码?</a-link>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" style="width: 100%;" html-type="submit"
-        >Submit
-        </a-button>
-      </a-form-item>
-      <a-form-item>
-        <router-link to="/register">
-          <a-link type="primary"
-          >创建账号
-          </a-link>
-        </router-link>
-      </a-form-item>
-    </a-form>
+      <a-tab-pane key="1" title="账号登录">
+        <a-form
+            ref="loginFormRef"
+            :rules="formRules"
+            size="medium"
+            layout="vertical"
+            :model="formItem"
+            auto-label-width
+            @submit="submitForm"
+        >
+          <a-form-item label="Username"
+                       field="username"
+                       hide-asterisk
+          >
+            <a-input
+                v-model.trim="formItem.username"
+                placeholder="Please input username"
+                :onFocus="onFocus">
+              <template #prefix>
+                <icon-user />
+              </template>
+            </a-input>
+          </a-form-item>
+          <a-form-item label="Password"
+                       field="password"
+                       hide-asterisk
+          >
+            <a-input-password
+                v-model.trim="formItem.password"
+                placeholder="Please input password"
+            >
+            </a-input-password>
+          </a-form-item>
+          <a-form-item>
+            <a-link type="primary">忘记用户名或密码?</a-link>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" style="width: 100%;" html-type="submit"
+            >Submit
+            </a-button>
+          </a-form-item>
+          <a-form-item>
+            <router-link to="/register">
+              <a-link type="primary"
+              >创建账号
+              </a-link>
+            </router-link>
+          </a-form-item>
+        </a-form>
+      </a-tab-pane>
+      <a-tab-pane key="2" title="微信登录">
+        <img  height="280" width="280"  :src=wechatQRData.qrURL>
+        <a-button type="secondary" @click="checkQR">扫码后点此继续</a-button>
+      </a-tab-pane>
+    </a-tabs>
   </a-card>
 </template>
 <script>
@@ -62,6 +68,10 @@ export default {
   name: "LoginView",
   data() {
     return {
+      wechatQRData:{
+        token:"",
+        qrURL:""
+      },
       formItem: {
         username: "",
         password: ""
@@ -70,7 +80,7 @@ export default {
         username: [{required: true, message: "用户名不能为空", trigger: "blur"},
           ],
         password: {required: true, message: "密码不能为空", trigger: "blur"}
-      }
+      },
     }
   },
   methods: {
@@ -81,14 +91,18 @@ export default {
           user: {username: values.username},
           pwd: {password: values.password}
         }
-        that.$axios.post("/login", data)
+        that.$axios.post("/user/login", data)
             .then((response) => {
-              let resData = response["data"]
-              that.$message.success({
-                message: response["message"]
-              })
-              that.$store.commit("setToken", resData["token"])
-              that.$router.push("/home")
+              let res = response["data"]
+              if (res.code ===200){
+                that.$message.success({
+                  message: response["message"]
+                })
+                that.$store.commit("setToken", res["token"])
+                that.$router.push("/home")
+              }else {
+                that.$message.error(response["data"]["message"])
+              }
             })
             .catch((error) => {
               that.$message.error(error.response["data"]["message"])
@@ -99,7 +113,47 @@ export default {
     },
     onFocus(){
       this.$refs.loginFormRef.clearValidate()
+    },
+
+    getQR() {
+        let that = this
+        that.$axios.get("/user/wechat_qr").then((response) =>{
+          let res = response["data"]
+          if (res["code"]===200){
+            that.wechatQRData.qrURL = res.data["qr_url"]
+            that.wechatQRData.token = res.data["token"]
+          }else {
+            that.$message.error(res.data["code"])
+          }
+        }).catch((error)=>{
+          that.$message.error(error.data.data["message"])
+        })
+    },
+    checkQR(){
+      let that = this
+      let data = new FormData();
+
+      data.append('wechat_token',that.wechatQRData.token);
+      that.$axios.post("/user/wechat_check", data).then((response) =>{
+        let res = response["data"]
+        if (res.code ===200){
+          console.log(res)
+          that.$message.success({
+            message: response["message"]
+          })
+          that.$store.commit("setToken", res["token"])
+          that.$router.push("/home")
+        }else {
+          that.$message.error(response["data"]["message"])
+        }
+      }).catch((error)=>{
+        console.log(error.data)
+        that.$message.error(error.data["message"])
+      })
     }
+  },
+  created: function () {
+    this.getQR()
   }
 }
 
@@ -109,7 +163,7 @@ export default {
 .box-card {
   position: absolute;
   width: calc(min(100%, 360px));
-  height: 430px;
+  /*height: 420px;*/
   margin: auto auto auto auto;
   top: 30%;
   left: 15%;
