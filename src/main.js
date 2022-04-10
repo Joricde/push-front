@@ -9,8 +9,8 @@ import '@arco-design/web-vue/dist/arco.css';
 import { Message } from '@arco-design/web-vue';
 
 const config = {
-    baseURL: 'http://localhost:8000/api',
-    timeout: 1000,
+    baseURL: '/api',
+    timeout: 3000,
     headers: {
         'Content-Type': 'application/json',
     },
