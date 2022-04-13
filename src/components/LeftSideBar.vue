@@ -1,80 +1,194 @@
 <template>
   <a-layout-sider breakpoint="xl"
-                  :collapsed="false"
-  >
+                  :collapsed="false">
     <div class="logo"/>
-    <a-menu
-        :default-open-keys="['1']"
-        :default-selected-keys="['0_3']"
-        :style="{ width: '100%' }"
-        @menu-item-click="onClickMenuItem"
-    >
-      <a-menu-item key="0_1" disabled >
-        <IconHome></IconHome>
-        Menu 1
-      </a-menu-item>
-      <a-menu-item key="0_2">
-        <IconCalendar></IconCalendar>
-        Menu 2
-      </a-menu-item>
-      <a-menu-item key="0_3">
-        <IconCalendar></IconCalendar>
-        Menu 3
-      </a-menu-item>
-      <a-sub-menu key="1">
-        <template #title>
-          <IconCalendar></IconCalendar>
-          Navigation 1
+    <a-dropdown alignPoint  @click="handleSelect">
+      <div class="flex-box">
+        <span class="avatar"><IconUser/></span>
+        <div class="content">
+          <a-typography-title :heading="6">{{ user.nickname }}</a-typography-title>
+          {{user.username}}
+        </div>
+      </div>
+      <template #content>
+        <a-doption>修改信息</a-doption>
+        <a-doption >修改密码</a-doption>
+      </template>
+    </a-dropdown>
+    <a-input-search v-model="searchContext.context"
+                    placeholder="Search"
+                    :loading="searchContext.loading"
+                    style="margin: 10px  auto 10px auto; width: 90%"/>
+
+    <a-dropdown position="top" trigger="contextMenu">
+      <a-button long style="text-align: left ; margin: 10px  auto 10px auto; width: 90%" >
+        <template #icon>
+          <icon-sun />
         </template>
-        <a-menu-item key="1_1">Menu 1</a-menu-item>
-        <a-menu-item key="1_2">Menu 2</a-menu-item>
-        <a-sub-menu key="2" title="Navigation 2">
-          <a-menu-item key="2_1">Menu 1</a-menu-item>
-          <a-menu-item key="2_2">Menu 2</a-menu-item>
-        </a-sub-menu>
-        <a-sub-menu key="3" title="Navigation 3">
-          <a-menu-item key="3_1">Menu 1</a-menu-item>
-          <a-menu-item key="3_2">Menu 2</a-menu-item>
-          <a-menu-item key="3_3">Menu 3</a-menu-item>
-        </a-sub-menu>
-      </a-sub-menu>
-      <a-sub-menu key="4">
-        <template #title>
-          <IconCalendar></IconCalendar>
-          Navigation 4
+        我的一天
+          <a-badge
+            :count="1"
+            :dotStyle="{ background: '#E5E6EB', color:'gray' }"
+            :max-count="99" style="float: right" />
+      </a-button>
+    </a-dropdown>
+    <a-dropdown position="top" trigger="contextMenu">
+      <a-button long style="text-align: left ; margin: 10px  auto 10px auto; width: 90%" >
+        <template #icon>
+          <icon-star />
         </template>
-        <a-menu-item key="4_1">Menu 1</a-menu-item>
-        <a-menu-item key="4_2">Menu 2</a-menu-item>
-        <a-menu-item key="4_3">Menu 3</a-menu-item>
-      </a-sub-menu>
-      <a-sub-menu key="5">
-        <template #title>
-          <IconCalendar></IconCalendar>
-          Navigation 4
+        重要
+        <a-badge
+            :count="1"
+            :dotStyle="{ background: '#E5E6EB', color:'gray' }"
+            :max-count="99" style="float: right" />
+      </a-button>
+    </a-dropdown>
+    <a-dropdown position="top" trigger="contextMenu">
+      <a-button long style="text-align: left ; margin: 10px  auto 10px auto; width: 90%" >
+        <template #icon>
+          <icon-user-group />
         </template>
-        <a-menu-item key="4_1">Menu 1</a-menu-item>
-        <a-menu-item key="4_2">Menu 2</a-menu-item>
-        <a-menu-item key="4_3">Menu 3</a-menu-item>
-      </a-sub-menu>
-    </a-menu>
-    <!-- trigger -->
-    <template #trigger="{ collapsed }">
-      <IconCaretRight v-if="collapsed"></IconCaretRight>
-      <IconCaretLeft v-else></IconCaretLeft>
-    </template>
+        已分配给我
+        <a-badge
+            :count="1"
+            :dotStyle="{ background: '#E5E6EB', color:'gray' }"
+            :max-count="99" style="float: right" />
+      </a-button>
+    </a-dropdown>
+    <a-dropdown position="top" trigger="contextMenu">
+      <a-button long style="text-align: left ; margin: 10px  auto 10px auto; width: 90%" >
+        <template #icon>
+          <icon-user-group />
+        </template>
+        已完成
+        <a-badge
+            :count="1"
+            :dotStyle="{ background: '#E5E6EB', color:'gray' }"
+            :max-count="99" style="float: right" />
+      </a-button>
+    </a-dropdown>
+    <a-divider />
+    <a-dropdown position="top" :key="key" trigger="contextMenu" v-for="(value, key) in taskList">
+      <a-button long style="text-align: left ; margin: 10px  auto 10px auto; width: 90%" >
+        <template #icon>
+          <icon-list />
+        </template>
+        {{ value }}
+        <a-badge
+            :count="1"
+            :dotStyle="{ background: '#E5E6EB', color:'gray' }"
+            :max-count="99" style="float: right" />
+      </a-button>
+      <template #content>
+        <a-doption>
+        <a-typography-text type="danger">
+          删除分组
+        </a-typography-text>
+        </a-doption>
+        <a-doption>
+          <a-typography-text>
+            内容移动到
+          </a-typography-text></a-doption>
+        <a-doption>
+          <a-typography-text >
+            重命名
+          </a-typography-text>
+          </a-doption>
+      </template>
+    </a-dropdown>
+    <a-dropdown trigger="contextMenu">
+      <a-button long
+                style="text-align: left ;
+                margin: 10px  auto 10px auto;
+                width: 90%"
+                @click="addTaskList">
+        <template #icon>
+          <icon-subscribe-add />
+        </template>
+        添加列表
+        <a-badge
+            :count="1"
+            :dotStyle="{ background: '#E5E6EB', color:'gray' }"
+            :max-count="99" style="float: right" />
+      </a-button>
+    </a-dropdown>
   </a-layout-sider>
 </template>
 
 <script>
 export default {
   name: "LeftSideBar",
+  data() {
+    return {
+      user: {
+        username: "username",
+        nickname: "nickname",
+        email: "email@email.com",
 
+      },
+      searchContext: {
+        context: "",
+        loading: false
+      },
+      taskTemplate:{
+        title: '',
+        record:0,
+      },
+      taskList: [
+      ],
+      handleSelect: (v) => {
+        console.log(v)
+      }
+    }
+  },
   methods: {
     onClickMenuItem(key) {
       this.$message.info({content: `You select ${key}`, showIcon: true});
     },
+    addTaskList() {
+      this.taskList.push("test")
+    }
+  },
+  watch: {
+    'searchContext.context': function (newVal) {
+      this.searchContext.loading = true
+      setTimeout(() => {
+        console.log("new" + newVal)
+        this.searchContext.loading = false
+      }, 1000)
+    }
   }
 }
 </script>
 <style scoped>
+.flex-box .avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+  color: var(--color-text-2);
+  font-size: 16px;
+  background-color: var(--color-fill-3);
+  border-radius: 50%;
+}
+
+.flex-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-box .content {
+  flex: 1;
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.menu_content {
+  text-align: left;
+}
 </style>

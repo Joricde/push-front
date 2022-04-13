@@ -2,10 +2,13 @@ import { createStore } from 'vuex'
 
 
 const store = createStore({
-    state: {
+    state() {
+        return{
             uid: "",
             username: "",
             token: "",
+            is_login:false
+        }
     },
     mutations: {
         setUserID(state, uid) {

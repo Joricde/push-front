@@ -19,10 +19,10 @@ const config = {
 
 const instance = axios.create(config);
 instance.defaults.headers.common["Authorization"] = store.state.token
-
 const app = createApp(App)
 app.config.globalProperties.$axios = instance;
 app.config.globalProperties.$message = Message;
+app.config.globalProperties.$store = store;
 app.use(ArcoVue).use(router).use(store).use(ArcoVueIcon)
 app.mount("#app")
 
