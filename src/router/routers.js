@@ -8,7 +8,9 @@ const routes = [
     {path: '/', component: IndexView},
     {path: '/register', component: RegisterView},
     {path: '/login', component: loginView},
-    {path: '/home', component: HomeView},
+    {path: '/home', component: HomeView, children:{
+        path: '/home/:title'
+        }},
 
 ]
 

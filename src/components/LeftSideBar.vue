@@ -1,10 +1,12 @@
 <template>
   <a-layout-sider breakpoint="xl"
-                  :collapsed="false">
+                  :collapsed="false"
+                  style="text-align: center"
+  >
     <div class="logo"/>
     <a-dropdown alignPoint  @click="handleSelect">
       <div class="flex-box">
-        <span class="avatar"><IconUser/></span>
+        <span class="avatar"><icon-user/></span>
         <div class="content">
           <a-typography-title :heading="6">{{ user.nickname }}</a-typography-title>
           {{user.username}}
@@ -27,7 +29,7 @@
         </template>
         我的一天
           <a-badge
-            :count="1"
+            :count="9"
             :dotStyle="{ background: '#E5E6EB', color:'gray' }"
             :max-count="99" style="float: right" />
       </a-button>
@@ -39,7 +41,7 @@
         </template>
         重要
         <a-badge
-            :count="1"
+            :count="0"
             :dotStyle="{ background: '#E5E6EB', color:'gray' }"
             :max-count="99" style="float: right" />
       </a-button>
@@ -107,10 +109,6 @@
           <icon-subscribe-add />
         </template>
         添加列表
-        <a-badge
-            :count="1"
-            :dotStyle="{ background: '#E5E6EB', color:'gray' }"
-            :max-count="99" style="float: right" />
       </a-button>
     </a-dropdown>
   </a-layout-sider>

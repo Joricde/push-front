@@ -4,7 +4,10 @@
             lazy-load
             justify
             >
-      <a-tab-pane key="1" title="账号登录">
+      <a-tab-pane key="1">
+        <template #title>
+          <icon-user/> 账号登录
+        </template>
         <a-form
             ref="loginFormRef"
             :rules="formRules"
@@ -54,7 +57,13 @@
           </a-form-item>
         </a-form>
       </a-tab-pane>
-      <a-tab-pane key="2" title="微信登录">
+      <a-tab-pane key="2">
+        <template #title>
+          <icon-qrcode />  微信登录
+        </template>
+        <a-typography-text type="secondary">
+          扫码后请点击关注微信公众号以便获取用户信息
+        </a-typography-text>
         <img  height="280" width="280"  :src=wechatQRData.qrURL>
         <a-button type="secondary" @click="checkQR">扫码后点此继续</a-button>
       </a-tab-pane>
@@ -88,17 +97,18 @@ export default {
       let that = this
       if (!errors) {
         let data = {
-          user: {username: values.username},
-          pwd: {password: values.password}
+         username: values.username,
+          password: values.password
         }
         that.$axios.post("/user/login", data)
             .then((response) => {
               let res = response["data"]
               if (res.code ===200){
                 that.$message.success({
-                  message: response["message"]
+                  content: res["message"]
                 })
-                that.$store.commit("setToken", res["token"])
+                that.$store.commit("setToken", res.data["token"])
+                console.log(that.$store.state.token)
                 that.$router.push("/home")
               }else {
                 that.$message.error(response["data"]["message"])
@@ -137,18 +147,19 @@ export default {
       that.$axios.post("/user/wechat_check", data).then((response) =>{
         let res = response["data"]
         if (res.code ===200){
-          console.log(res)
+          console.log(response)
           that.$message.success({
-            message: response["message"]
+            content: res.message
           })
-          that.$store.commit("setToken", res["token"])
+          that.$store.commit("setToken", res.data["token"])
+          console.log(that.$store.state.token)
           that.$router.push("/home")
         }else {
-          that.$message.error(response["data"]["message"])
+          that.$message.error(res["message"])
         }
       }).catch((error)=>{
         console.log(error.data)
-        that.$message.error(error.data["message"])
+        that.$message.error("服务器异常，请稍后再试")
       })
     }
   },
@@ -166,7 +177,7 @@ export default {
   /*height: 420px;*/
   margin: auto auto auto auto;
   top: 30%;
-  left: 15%;
+  left: calc(max(15%,200px));
   right: 15%;
   line-height: 20%;
 }

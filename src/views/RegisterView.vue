@@ -10,55 +10,55 @@
         @submit="submitForm"
     >
       <a-form-item>
-          <a-typography-title :heading="4">
-            注册
-          </a-typography-title>
+        <a-typography-title :heading="4">
+          注册
+        </a-typography-title>
       </a-form-item>
-      <a-form-item label="Username"
+      <a-form-item label="用户名"
                    field="username"
                    :validate-status="user_status"
                    feedback
       >
         <a-input
             v-model.trim="registerFormItem.username"
-            placeholder="Please input username"
+            placeholder="请输入用户名"
             @focus="onFocus"
         />
       </a-form-item>
-      <a-form-item label="Nickname" field="nickname">
+      <a-form-item label="昵称" field="nickname">
         <a-input
             v-model.trim="registerFormItem.nickname"
-            placeholder="Please input username"
+            placeholder="请输入昵称"
         />
       </a-form-item>
-      <a-form-item label="Password" field="password">
+      <a-form-item label="密码" field="password">
         <a-input-password
             v-model.trim="registerFormItem.password"
-            placeholder="Please input password"
+            placeholder="请输入密码"
             autocomplete="off"
         />
       </a-form-item>
-      <a-form-item label="Check Password" field="checkPassword" hide-asterisk>
+      <a-form-item label="校验密码" field="checkPassword" hide-asterisk>
         <a-input-password
             v-model.trim="registerFormItem.checkPassword"
-            placeholder="Please input password"
+            placeholder="请再次输入密码"
         />
       </a-form-item>
-      <a-form-item label="Email" field="email">
+      <a-form-item label="邮箱" field="email">
         <a-input
             v-model="registerFormItem.email"
-            placeholder="Please input email"
+            placeholder="请输入邮箱"
         />
       </a-form-item>
-      <a-form-item label="Phone" field="phone">
+      <a-form-item label="手机号" field="phone">
         <a-input
             v-model="registerFormItem.phone"
-            placeholder="Please input phone"
+            placeholder="请输入电话号码"
         />
       </a-form-item>
       <a-form-item>
         <a-button type="primary" style="width: 100%;" html-type="submit"
-        >Submit
+        >提交
         </a-button>
       </a-form-item>
     </a-form>
@@ -79,11 +79,10 @@ export default {
         email: "",
         phone: "",
       },
-      checkUsername: "",
       user_status: 'success',
       rules: {
         username: [
-          {required: true, message: "用户名不能空", trigger: "blur"},
+          {required: true, message: "用户名不能空", trigger: "blur"}, // 规则1
           {
             validator: async (value, cb) => {
               let b = await this.isExistUSer(value)
@@ -103,7 +102,7 @@ export default {
         checkPassword: [
           {required: true, message: "请再次输入密码", trigger: "blur"},
           {
-            validator: async (value, cb) => {
+            validator: (value, cb) => {
               if (value !== this.registerFormItem.password) {
                 cb("密码不一致")
               }
@@ -122,18 +121,16 @@ export default {
       let that = this
       let a = true
       that.user_status = 'validating'
-      if (that.checkUsername !== values) {
-        await that.$axios.get("/check_name", {
-          params: {
-            username: values
-          }
-        }).then(function (response) {
-          if (response['data']['code'] === 200) {
-            a = false
-          }
-        })
-        that.checkUsername = that.registerFormItem.username
-      }
+      await that.$axios.get("/user/check_name", {
+        params: {
+          username: values
+        }
+      }).then((response) => {
+        if (response['data']['code'] === 200) {
+          a = false
+        }
+      })
+
       that.user_status = a ? "error" : "success"
       return a
     },
@@ -144,27 +141,25 @@ export default {
       let that = this
       if (!errors) {
         let data = {
-          user: {
-            username: values.username,
-            nickname: values.nickname,
-            email: values.email,
-          },
-          pwd: {password: values.password}
+          username: values.username,
+          nickname: values.nickname,
+          email: values.email,
+          password: values.password
         }
         if (that.registerFormItem.phone !== "") {
-          data.user.phone = values.phone
+          data.phone = values.phone
         }
         that.$axios.post("/user/register", data)
             .then((response) => {
               let resData = response["data"]
               if (resData.code === 200) {
                 that.$message.success({
-                  message: response["data"]["message"]
+                  message: resData["data"]["message"]
                 })
                 that.$router.push("/")
               } else {
                 that.$message.error({
-                      message: response["data"]["message"]
+                      message: resData["data"]["message"]
                     }
                 )
               }
@@ -184,7 +179,7 @@ export default {
   width: calc(min(100%, 420px));
   margin: auto auto auto auto;
   top: 10%;
-  left: 15%;
+  left: calc(max(15%, 200px));
   right: 15%;
   line-height: 20%;
 }
