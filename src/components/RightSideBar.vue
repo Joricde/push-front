@@ -4,74 +4,58 @@
                   style="width: calc(max(30vw, 200px))"
   >
     <div class="logo"/>
-    <a-menu
-        :default-open-keys="['1']"
-        :default-selected-keys="['0_3']"
-        :style="{ width: '100%' }"
-        @menu-item-click="onClickMenuItem"
-    >
-      <a-menu-item key="0_1" disabled >
-        <IconHome></IconHome>
-        Menu 1
-      </a-menu-item>
-      <a-menu-item key="0_2">
-        <IconCalendar></IconCalendar>
-        Menu 2
-      </a-menu-item>
-      <a-menu-item key="0_3">
-        <IconCalendar></IconCalendar>
-        Menu 3
-      </a-menu-item>
-      <a-sub-menu key="1">
-        <template #title>
-          <IconCalendar></IconCalendar>
-          Navigation 1
-        </template>
-        <a-menu-item key="1_1">Menu 1</a-menu-item>
-        <a-menu-item key="1_2">Menu 2</a-menu-item>
-        <a-sub-menu key="2" title="Navigation 2">
-          <a-menu-item key="2_1">Menu 1</a-menu-item>
-          <a-menu-item key="2_2">Menu 2</a-menu-item>
-        </a-sub-menu>
-        <a-sub-menu key="3" title="Navigation 3">
-          <a-menu-item key="3_1">Menu 1</a-menu-item>
-          <a-menu-item key="3_2">Menu 2</a-menu-item>
-          <a-menu-item key="3_3">Menu 3</a-menu-item>
-        </a-sub-menu>
-      </a-sub-menu>
-      <a-sub-menu key="4">
-        <template #title>
-          <IconCalendar></IconCalendar>
-          Navigation 4
-        </template>
-        <a-menu-item key="4_1">Menu 1</a-menu-item>
-        <a-menu-item key="4_2">Menu 2</a-menu-item>
-        <a-menu-item key="4_3">Menu 3</a-menu-item>
-      </a-sub-menu>
-      <a-sub-menu key="5">
-        <template #title>
-          <IconCalendar></IconCalendar>
-          Navigation 4
-        </template>
-        <a-menu-item key="4_1">Menu 1</a-menu-item>
-        <a-menu-item key="4_2">Menu 2</a-menu-item>
-        <a-menu-item key="4_3">Menu 3</a-menu-item>
-      </a-sub-menu>
-    </a-menu>
-    <!-- trigger -->
-    <template #trigger="{ collapsed }">
-      <IconCaretRight v-if="collapsed"></IconCaretRight>
-      <IconCaretLeft v-else></IconCaretLeft>
-    </template>
+    <a-form :model="form" @submit="handleSubmit">
+      <a-space direction="vertical" size="medium" class="from">
+        <a-typography-title :heading="5" editable v-model:editText="str">
+          {{ str }}
+        </a-typography-title>
+        <a-select defaultValue="推送方式" :style="{width:'90%'}" placeholder="Please select ...">
+          <a-option>推送方式</a-option>
+          <a-option>微信推送</a-option>
+          <a-option>邮箱推送</a-option>
+          <a-option>短信推送</a-option>
+        </a-select>
+        <a-date-picker placeholder="提醒我"  :style="{width:'90%'}" showTime>
+          <template #suffix-icon>
+            <icon-notification />
+          </template>
+        </a-date-picker>
+        <a-date-picker placeholder="截至时间" :style="{width:'90%'}" showTime>
+          <template #suffix-icon>
+            <icon-calendar />
+          </template>
+        </a-date-picker>
+        <a-date-picker placeholder="重复" :style="{width:'90%'}" showTime>
+          <template #suffix-icon>
+            <icon-sync />
+          </template>
+        </a-date-picker>
+        <a-upload draggable action="/" />
+        <a-textarea placeholder="添加备注"  auto-size style="min-height: 100px"/>
+      </a-space>
+    </a-form>
   </a-layout-sider>
 </template>
 
 <script>
 export default {
-  name: "RightSideBar"
+  name: "RightSideBar",
+  data(){
+    return{
+      str:"任务1"
+    }
+  }
 }
 </script>
 
 <style scoped>
+.from{
+  width: calc(max(28vw, 180px));
+  margin: 55px auto auto auto;
+  top: 5%;
+  left: 10%;
+  right: 10%;
+  line-height: 20%;
+}
 
 </style>

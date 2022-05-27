@@ -1,15 +1,16 @@
 <template>
   <a-layout class="layout-demo">
   <LeftSideBar></LeftSideBar>
-      <a-layout style="padding: 0 24px;">
+      <a-layout style="padding: 0 24px;  min-width: 250px;">
         <a-breadcrumb :style="{ margin: '16px 0'}">
           <a-breadcrumb-item>我的一天</a-breadcrumb-item>
         </a-breadcrumb>
         <a-layout-content>
           <a-space   direction='vertical' style="margin:2vh 2vh 2vh 2vh ">
             <a-list v-for="n in 10" :key="n"  :hoverable="true">
-              <a-list-item >
-                <a-button shape="circle" size="mini" style="margin-right: 2vh; position: relative;top: 5px;"/>
+              <a-list-item>
+                <a-button v-if="n===10" status="success" shape="circle" size="mini" style="margin-right: 2vh;  position: relative;top: 5px;"/>
+                <a-button v-else  shape="circle" size="mini" style="margin-right: 2vh;  position: relative;top: 5px;"/>
                 <a-typography-text @click="handleClick" v-if="n===10" delete type="secondary">
                   任务{{n}}
                 </a-typography-text>

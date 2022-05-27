@@ -84,11 +84,11 @@ export default {
         username: [
           {required: true, message: "用户名不能空", trigger: "blur"}, // 规则1
           {
-            validator: async (value, cb) => {
+            validator: async (value, callback) => {
               let b = await this.isExistUSer(value)
               return new Promise(resolve => {
                 if (b === true) {
-                  cb("用户已存在")
+                  callback("用户已存在")
                 }
                 resolve()
               })

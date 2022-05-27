@@ -17,26 +17,26 @@
             auto-label-width
             @submit="submitForm"
         >
-          <a-form-item label="Username"
+          <a-form-item label="用户名"
                        field="username"
                        hide-asterisk
           >
             <a-input
                 v-model.trim="formItem.username"
-                placeholder="Please input username"
+                placeholder="请输入用户名"
                 :onFocus="onFocus">
               <template #prefix>
                 <icon-user />
               </template>
             </a-input>
           </a-form-item>
-          <a-form-item label="Password"
+          <a-form-item label="密码"
                        field="password"
                        hide-asterisk
           >
             <a-input-password
                 v-model.trim="formItem.password"
-                placeholder="Please input password"
+                placeholder="请输入密码"
             >
             </a-input-password>
           </a-form-item>
@@ -45,7 +45,7 @@
           </a-form-item>
           <a-form-item>
             <a-button type="primary" style="width: 100%;" html-type="submit"
-            >Submit
+            >登录
             </a-button>
           </a-form-item>
           <a-form-item>
@@ -57,7 +57,7 @@
           </a-form-item>
         </a-form>
       </a-tab-pane>
-      <a-tab-pane key="2">
+      <a-tab-pane key="2" style="text-align: center">
         <template #title>
           <icon-qrcode />  微信登录
         </template>
