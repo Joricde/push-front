@@ -41,7 +41,7 @@
         </template>
         重要
         <a-badge
-            :count="0"
+            :count="2"
             :dotStyle="{ background: '#E5E6EB', color:'gray' }"
             :max-count="99" style="float: right" />
       </a-button>
@@ -53,7 +53,7 @@
         </template>
         已分配给我
         <a-badge
-            :count="1"
+            :count="0"
             :dotStyle="{ background: '#E5E6EB', color:'gray' }"
             :max-count="99" style="float: right" />
       </a-button>

@@ -147,7 +147,7 @@ export default {
           password: values.password
         }
         if (that.registerFormItem.phone !== "") {
-          data.phone = values.phone
+          data.phone = parseInt(values.phone)
         }
         that.$axios.post("/user/register", data)
             .then((response) => {

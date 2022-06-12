@@ -41,7 +41,11 @@
             </a-input-password>
           </a-form-item>
           <a-form-item>
-            <a-link type="primary">忘记用户名或密码?</a-link>
+            <router-link to="/find/account">
+              <a-link type="primary"
+              >忘记用户名或密码
+              </a-link>
+            </router-link>
           </a-form-item>
           <a-form-item>
             <a-button type="primary" style="width: 100%;" html-type="submit"
